@@ -19,13 +19,13 @@ kind: Deployment
 metadata:
   name: arcadebackend
 spec:
-  replicas: 1
+  replicas: 10
   selector:
     matchLabels:
       name: arcadebackend      
   minReadySeconds: 5
   strategy:
-    type: Recreate
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -37,6 +37,26 @@ spec:
       - name: arcadebackend
         image: ghcr.io/azure-adventure-day/azure-adventure-day-coach/gamebot:latest
         imagePullPolicy: Always
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
         ports:
           - containerPort: 8080
             name: arcadebackend         
@@ -46,3 +66,5 @@ spec:
             value: "8080"
           - name: "PICK_STRATEGY"
             value: "RANDOM"
+          - name: FF_BETS
+            value: "1"
