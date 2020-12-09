@@ -13,7 +13,7 @@ resource "azurerm_mssql_database" "gamedb" {
   name           = "gamedb"
   server_id      = azurerm_sql_server.gamesqlserver.id
   max_size_gb    = 32
-  sku_name       = "GP_Gen5_8"
+  sku_name       = "GP_Gen5_2"
 }
 
 output "SQL_PASSWORD" {
